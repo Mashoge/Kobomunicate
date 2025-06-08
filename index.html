@@ -1,16 +1,57 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>replit</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  Hello world
-  <script src="script.js"></script>
-</body>
+  <div class="login-container">
+    <h2>Login</h2>
+    
+      <form id="loginForm">
+      <input type="email" placeholder="Email" id="email" required />
+      <input type="password" placeholder="Password" id="password" required />
+      <button type="submit">Log In</button>
+    </form>
 
+    <p>Don't have an account? <a href="#">Sign up</a></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyCbKrCFsmLPOu7je0ccqHiopUnpNfYf0fM",
+  authDomain: "kobosocialization.firebaseapp.com",
+  projectId: "kobosocialization",
+  storageBucket: "kobosocialization.firebasestorage.app",
+  messagingSenderId: "5156219227",
+  appId: "1:5156219227:web:ab48bd329f3bf175da927e",
+  measurementId: "G-6VB9YM56J1"
+};
+
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+
+  document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        alert('Login failed: ' + error.message);
+      }
+    });
+  </script>
+</body>
 </html>

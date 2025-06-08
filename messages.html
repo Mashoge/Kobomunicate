@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Messages</title>
+  <link rel="stylesheet" href="messages.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Client Messaging</h1>
+    <div id="messages-box"></div>
+
+    <form id="messageForm">
+      <input type="text" id="username" placeholder="Your name" required />
+      <input type="text" id="message" placeholder="Enter message..." required />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
+
+    // YOUR FIREBASE CONFIG HERE - REPLACE WITH YOUR ACTUAL CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyCbKrCFsmLPOu7je0ccqHiopUnpNfYf0fM",
+      authDomain: "kobosocialization.firebaseapp.com",
+      projectId: "kobosocialization",
+      storageBucket: "kobosocialization.firebasestorage.app",
+      messagingSenderId: "5156219227",
+      appId: "1:5156219227:web:ab48bd329f3bf175da927e",
+      measurementId: "G-6VB9YM56J1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const messagesBox = document.getElementById("messages-box");
+    const form = document.getElementById("messageForm");
+
+    // Listen for new messages in real-time
+    const messagesCollection = collection(db, "messages");
+    const messagesQuery = query(messagesCollection, orderBy("timestamp"));
+
+    onSnapshot(messagesQuery, (snapshot) => {
+      messagesBox.innerHTML = ""; // Clear messages box before updating
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const msgDiv = document.createElement("div");
+        msgDiv.classList.add("message");
+        msgDiv.innerText = `${data.username}: ${data.message}`;
+        messagesBox.appendChild(msgDiv);
+      });
+
+      // Scroll to bottom on new messages
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (username && message) {
+        try {
+          await addDoc(messagesCollection, {
+            username: username,
+            message: message,
+            timestamp: new Date()
+          });
+          form.reset();
+        } catch (error) {
+          alert("Failed to send message: " + error.message);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
