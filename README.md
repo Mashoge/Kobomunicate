@@ -1,5 +1,5 @@
 # Kobomunicate
-Cloud for Kobo Clients (Example)
+Cloud for KoboSocial's Clients Communication
 
 TITLE: Implementation of an Online Communication Portal for KoboSocial's Client Engagement
 
